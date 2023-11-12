@@ -6,6 +6,7 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -17,6 +18,14 @@ export class LoggingInterceptor implements NestInterceptor {
     this.logger.log(
       `Received {${request.url}, ${request.method}, ${body}} request`,
     );
-    return next.handle();
+    return next.handle().pipe(
+      map((response) => {
+        const body = JSON.stringify(response);
+        this.logger.log(
+          `Responsed {${request.url}, ${request.method}, ${body}}`,
+        );
+        return response;
+      }),
+    );
   }
 }
