@@ -1,8 +1,8 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { isNotEmpty } from 'class-validator';
 import { isItemEmail } from '../../common/utils/array.util';
-import { BaseNotificationRecipientsRequestModel } from '../models/base.notificaiton.recipients.request.model';
-import { NotificationRecipientsRequestModel } from '../models/notification.recipients.request.model';
+import { NotificationRecipientsRequestModel } from '../models/notificaiton.recipients.request.model';
+import { ExtendedNotificationRecipientsRequestModel } from '../models/extended.notification.recipients.request.model';
 
 @Injectable()
 export class ParseNotificationRecipientsRequestPipe
@@ -11,8 +11,8 @@ export class ParseNotificationRecipientsRequestPipe
   private readonly regex = new RegExp(/@([~\S]*)/, 'g');
 
   transform(
-    value: BaseNotificationRecipientsRequestModel,
-  ): NotificationRecipientsRequestModel {
+    value: NotificationRecipientsRequestModel,
+  ): ExtendedNotificationRecipientsRequestModel {
     const recipients = this.extractRecipientsFrom(value.notification);
 
     if (!recipients.every(isItemEmail)) {

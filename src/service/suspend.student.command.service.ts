@@ -20,7 +20,7 @@ export class SuspendStudentCommandService {
     });
 
     if (isEmpty(student)) {
-      throw new BadRequestException('student must be registered first');
+      throw new BadRequestException('student must be registered');
     } else if (!student.suspended) {
       student.suspend();
       this.studentRepository.save(student);

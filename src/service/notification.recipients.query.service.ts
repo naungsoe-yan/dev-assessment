@@ -4,7 +4,7 @@ import { DataSource, Repository, In } from 'typeorm';
 import { isEmpty } from 'class-validator';
 import { CustomRegistrationRepository } from '../repository/custom.registration.repository';
 import { Student } from '../repository/entities/student.entity';
-import { NotificationRecipientsRequestModel } from './models/notification.recipients.request.model';
+import { ExtendedNotificationRecipientsRequestModel } from './models/extended.notification.recipients.request.model';
 import { NotificationRecipientsResponseModel } from './models/notification.recipients.response.model';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class NotificationRecipientsQueryService {
   }
 
   async findNotificationRecipients(
-    requestModel: NotificationRecipientsRequestModel,
+    requestModel: ExtendedNotificationRecipientsRequestModel,
   ): Promise<NotificationRecipientsResponseModel> {
     const registeredRecipients = await this.findRegisteredRecipients(
       requestModel.teacher,
