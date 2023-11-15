@@ -7,7 +7,7 @@ services:
       - /bin/sh
       - -c
       - |
-        curl https://github.com/naungsoe-yan/dev-assessment/archive/refs/heads/main.zip --output main.sql
+        curl https://github.com/naungsoe-yan/dev-assessment/archive/refs/heads/main.zip --output main.zip
         unzip -o main.zip
         rm main.zip
         npm install -g @nestjs/cli
@@ -31,9 +31,9 @@ services:
       - /bin/sh
       - -c
       - |
-        sleep 15
-        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init.sql --output mysql-init.sql
-        mysql --user=root --host=mysql --port=3306 dev-assessment < mysql-init.sql
+        sleep 30
+        curl https://raw.githubusercontent.com/naungsoe-yan/dev-assessment/main/mysql-init.sql --output mysql-init.sql
+        mysql --user=root --password=password --host=mysql --port=3306 dev-assessment < mysql-init.sql
         exit
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -49,7 +49,7 @@ services:
     container_name: "mysql"
     image: mysql:8.2.0
     environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: dev-assessment
     ports:
       - "3306:3306"

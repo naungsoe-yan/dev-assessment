@@ -48,6 +48,9 @@ export class RegisterStudentsCommandService {
           manager.save(newRegistration);
         });
       });
+      this.logger.log(
+        `Created registration {${JSON.stringify(newRegistrations)}}`,
+      );
     }
   }
 
@@ -60,9 +63,10 @@ export class RegisterStudentsCommandService {
       return Promise.resolve(teacher);
     }
 
-    const newTeacher = new Teacher(teacherEmail);
+    let newTeacher = new Teacher(teacherEmail);
     newTeacher.createdDate = new Date();
-    return this.teacherRepository.save(newTeacher);
+    newTeacher = await this.teacherRepository.save(newTeacher);
+    this.logger.log(`Created a teacher {${JSON.stringify(newTeacher)}}`);
   }
 
   private async findOrSaveStudents(
@@ -88,6 +92,7 @@ export class RegisterStudentsCommandService {
         return manager.save(newStudent);
       });
     });
+    this.logger.log(`Created students {${JSON.stringify(newStudents)}}`);
     return Promise.resolve(students.concat(newStudents));
   }
 }

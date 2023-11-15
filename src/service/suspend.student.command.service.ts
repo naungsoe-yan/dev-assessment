@@ -21,6 +21,7 @@ export class SuspendStudentCommandService {
     } else if (!student.suspended) {
       student.suspend();
       await this.studentRepository.save(student);
+      this.logger.log(`Suspended a student {${JSON.stringify(student)}}`);
     }
   }
 }
