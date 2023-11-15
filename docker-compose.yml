@@ -27,13 +27,13 @@ services:
   seeder:
     container_name: "seeder"
     image: mysql:8.2.0
-    command:
+    entrypoint:
       - /bin/sh
       - -c
       - |
         sleep 10
-        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init.sql --output mysql-init.sql
-        mysql --user=root --host=mysql --port=3306 dev-assessment < ./mysql-init.sql
+        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init-docker.sql --output mysql-init.sql
+        mysql --user=root --host=mysql --port=3306 dev-assessment < mysql-init.sql
         exit
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -45,7 +45,6 @@ services:
       - "3305:3305"
     volumes:
       - mysql:/home/mysql
-    
   mysql:
     container_name: "mysql"
     image: mysql:8.2.0
