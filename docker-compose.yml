@@ -7,7 +7,7 @@ services:
       - /bin/sh
       - -c
       - |
-        wget https://github.com/naungsoe-yan/dev-assessment/archive/refs/heads/main.zip
+        curl https://github.com/naungsoe-yan/dev-assessment/archive/refs/heads/main.zip --output main.sql
         unzip -o main.zip
         rm main.zip
         npm install -g @nestjs/cli
@@ -31,7 +31,7 @@ services:
       - /bin/sh
       - -c
       - |
-        sleep 10
+        sleep 15
         curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init-docker.sql --output mysql-init.sql
         mysql --user=root --host=mysql --port=3306 dev-assessment < mysql-init.sql
         exit
