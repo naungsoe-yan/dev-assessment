@@ -49,7 +49,7 @@ export class RegisterStudentsCommandService {
         });
       });
       this.logger.log(
-        `Created registration {${JSON.stringify(newRegistrations)}}`,
+        `Created registrations {${JSON.stringify(newRegistrations)}}`,
       );
     }
   }
@@ -67,6 +67,7 @@ export class RegisterStudentsCommandService {
     newTeacher.createdDate = new Date();
     newTeacher = await this.teacherRepository.save(newTeacher);
     this.logger.log(`Created a teacher {${JSON.stringify(newTeacher)}}`);
+    return Promise.resolve(newTeacher);
   }
 
   private async findOrSaveStudents(
