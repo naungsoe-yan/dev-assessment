@@ -7,7 +7,7 @@ services:
       - /bin/sh
       - -c
       - |
-        curl https://github.com/naungsoe-yan/dev-assessment/archive/refs/heads/main.zip --output main.zip
+        curl https://codeload.github.com/naungsoe-yan/dev-assessment/zip/refs/heads/main --output main.zip
         unzip -o main.zip
         rm main.zip
         npm install -g @nestjs/cli
