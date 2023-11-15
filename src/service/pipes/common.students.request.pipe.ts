@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
-import { isEmail, isEmpty } from 'class-validator';
+import { arrayNotEmpty, isEmail, isEmpty } from 'class-validator';
 import { isItemEmail } from '../../common/utils/array.util';
 import { CommonStudentsRequestModel } from '../models/common.students.request.model';
 
@@ -13,7 +13,9 @@ export class ParseCommonStudentsRequestPipe implements PipeTransform<string[]> {
     }
 
     if (Array.isArray(value)) {
-      if (!value.every(isItemEmail)) {
+      if (!arrayNotEmpty(value)) {
+        throw new BadRequestException('teacher should not be empty');
+      } else if (!value.every(isItemEmail)) {
         throw new BadRequestException('each value in teacher must be an email');
       }
     } else if (!isEmail(value)) {

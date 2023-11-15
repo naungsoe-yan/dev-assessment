@@ -9,4 +9,8 @@ export class SuspendStudentRequestModel {
   @IsEmail({ ignore_max_length: false })
   @IsNotEmpty()
   student: string;
+
+  constructor(student: string) {
+    this.student = student;
+  }
 }

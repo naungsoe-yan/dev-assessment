@@ -1,20 +1,17 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { isEmpty } from 'class-validator';
-import { Student } from '../repository/entities/student.entity';
 import { SuspendStudentRequestModel } from './models/suspend.student.request.model';
+import { StudentRepository } from '../repository/student.repository';
 
 @Injectable()
 export class SuspendStudentCommandService {
   private readonly logger = new Logger(SuspendStudentCommandService.name);
 
-  constructor(
-    @InjectRepository(Student)
-    private studentRepository: Repository<Student>,
-  ) {}
+  constructor(private studentRepository: StudentRepository) {}
 
-  async suspendStudent(requestModel: SuspendStudentRequestModel) {
+  async suspendStudent(
+    requestModel: SuspendStudentRequestModel,
+  ): Promise<void> {
     const student = await this.studentRepository.findOneBy({
       email: requestModel.student,
     });
@@ -23,7 +20,7 @@ export class SuspendStudentCommandService {
       throw new BadRequestException('student must be registered');
     } else if (!student.suspended) {
       student.suspend();
-      this.studentRepository.save(student);
+      await this.studentRepository.save(student);
     }
   }
 }

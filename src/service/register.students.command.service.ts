@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository, In } from 'typeorm';
-import { isNotEmpty } from 'class-validator';
-import { Teacher } from '../repository/entities/teacher.entity';
-import { Student } from '../repository/entities/student.entity';
-import { Registration } from '../repository/entities/registration.entity';
+import { DataSource } from 'typeorm';
+import { arrayNotEmpty, isNotEmpty } from 'class-validator';
 import { RegisterStudentsRequestModel } from './models/register.students.request.model';
+import { TeacherRepository } from '../repository/teacher.repository';
+import { Teacher } from '../repository/entities/teacher.entity';
+import { StudentRepository } from '../repository/student.repository';
+import { Student } from '../repository/entities/student.entity';
+import { RegistrationRepository } from '../repository/registration.repository';
+import { Registration } from '../repository/entities/registration.entity';
 
 @Injectable()
 export class RegisterStudentsCommandService {
@@ -18,12 +20,9 @@ export class RegisterStudentsCommandService {
 
   constructor(
     private dataSource: DataSource,
-    @InjectRepository(Teacher)
-    private teacherRepository: Repository<Teacher>,
-    @InjectRepository(Student)
-    private studentRepository: Repository<Student>,
-    @InjectRepository(Registration)
-    private registrationRepository: Repository<Registration>,
+    private teacherRepository: TeacherRepository,
+    private studentRepository: StudentRepository,
+    private registrationRepository: RegistrationRepository,
   ) {}
 
   async registerStudents(
@@ -31,10 +30,9 @@ export class RegisterStudentsCommandService {
   ): Promise<void> {
     const teacher = await this.findOrSaveTeacher(requestModel.teacher);
     const students = await this.findOrSaveStudents(requestModel.students);
-    const registrations = await this.registrationRepository.find({
-      where: { teacher: teacher },
-      relations: { teacher: true, student: true },
-    });
+    const registrations = await this.registrationRepository.findByTeacherEmail(
+      requestModel.teacher,
+    );
     const newStudents = students.filter(
       (student) => !registrations.some(this.isExistingRegistration(student)),
     );
@@ -43,11 +41,14 @@ export class RegisterStudentsCommandService {
       newRegistration.createdDate = new Date();
       return newRegistration;
     });
-    this.dataSource.transaction(async (manager) => {
-      newRegistrations.forEach(async (newRegistration) => {
-        manager.save(newRegistration);
+
+    if (arrayNotEmpty(newRegistrations)) {
+      await this.dataSource.transaction(async (manager) => {
+        newRegistrations.forEach(async (newRegistration) => {
+          manager.save(newRegistration);
+        });
       });
-    });
+    }
   }
 
   private async findOrSaveTeacher(teacherEmail: string): Promise<Teacher> {
@@ -67,9 +68,8 @@ export class RegisterStudentsCommandService {
   private async findOrSaveStudents(
     studentEmails: string[],
   ): Promise<Array<Student>> {
-    const students = await this.studentRepository.findBy({
-      email: In(studentEmails),
-    });
+    console.log('studentEmails', studentEmails);
+    const students = await this.studentRepository.findByEmails(studentEmails);
 
     if (students.length === studentEmails.length) {
       return Promise.resolve(students);
@@ -78,12 +78,16 @@ export class RegisterStudentsCommandService {
     const newStudentEmails = studentEmails.filter(
       (email) => !students.some(this.isExistingStudent(email)),
     );
-    let newStudents = newStudentEmails.map((newEmail) => {
+    const newStudents = newStudentEmails.map((newEmail) => {
       const newStudent = new Student(newEmail);
       newStudent.createdDate = new Date();
       return newStudent;
     });
-    newStudents = await this.studentRepository.save(newStudents);
+    await this.dataSource.transaction(async (manager) => {
+      newStudents.map(async (newStudent) => {
+        return manager.save(newStudent);
+      });
+    });
     return Promise.resolve(students.concat(newStudents));
   }
 }

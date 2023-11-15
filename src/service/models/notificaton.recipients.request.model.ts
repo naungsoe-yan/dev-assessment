@@ -17,4 +17,9 @@ export class NotificationRecipientsRequestModel {
   @MaxLength(5000)
   @IsNotEmpty()
   notification: string;
+
+  constructor(teacher: string, notification: string) {
+    this.teacher = teacher;
+    this.notification = notification;
+  }
 }

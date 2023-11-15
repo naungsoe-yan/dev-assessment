@@ -13,8 +13,11 @@ import { RegisterStudentsCommandService } from './service/register.students.comm
 import { CommonStudentsQueryService } from './service/common.students.query.service';
 import { SuspendStudentCommandService } from './service/suspend.student.command.service';
 import { NotificationRecipientsQueryService } from './service/notification.recipients.query.service';
+import { TeacherRepository } from './repository/teacher.repository';
 import { Teacher } from './repository/entities/teacher.entity';
+import { StudentRepository } from './repository/student.repository';
 import { Student } from './repository/entities/student.entity';
+import { RegistrationRepository } from './repository/registration.repository';
 import { Registration } from './repository/entities/registration.entity';
 
 @Module({
@@ -46,6 +49,9 @@ import { Registration } from './repository/entities/registration.entity';
     CommonStudentsQueryService,
     SuspendStudentCommandService,
     NotificationRecipientsQueryService,
+    TeacherRepository,
+    StudentRepository,
+    RegistrationRepository,
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,

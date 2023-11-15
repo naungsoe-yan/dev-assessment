@@ -3,7 +3,7 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('CommonStudentsQueryController', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -15,10 +15,17 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
+  it('/api/commonstudents (GET)', async () => {
+    const responseBody = {
+      students: ['studentjon@gmail.com', 'studenthon@gmail.com'],
+    };
+    return await request(app.getHttpServer())
+      .get('/api/commonstudents?teacher=teacherken%40gmail.com')
       .expect(200)
-      .expect('Hello World!');
+      .expect(responseBody);
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });

@@ -1,30 +1,23 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { DataSource } from 'typeorm';
 import { isEmpty } from 'class-validator';
 import { isItemInArray } from '../common/utils/array.util';
-import { CustomRegistrationRepository } from '../repository/custom.registration.repository';
-import { Registration } from '../repository/entities/registration.entity';
 import { CommonStudentsRequestModel } from './models/common.students.request.model';
 import { CommonStudentsResponseModel } from './models/common.students.response.model';
+import { RegistrationRepository } from '../repository/registration.repository';
+import { Registration } from '../repository/entities/registration.entity';
 
 @Injectable()
 export class CommonStudentsQueryService {
   private readonly logger = new Logger(CommonStudentsQueryService.name);
-  private customRegistrationRepository: CustomRegistrationRepository;
 
-  constructor(private dataSource: DataSource) {
-    this.customRegistrationRepository = new CustomRegistrationRepository(
-      dataSource,
-    );
-  }
+  constructor(private registrationRepository: RegistrationRepository) {}
 
-  async findCommonStrudents(
+  async findCommonStrudentsBy(
     requestModel: CommonStudentsRequestModel,
   ): Promise<CommonStudentsResponseModel> {
-    const registrations =
-      await this.customRegistrationRepository.findByTeachersEmail(
-        requestModel.teachers,
-      );
+    const registrations = await this.registrationRepository.findByTeachersEmail(
+      requestModel.teachers,
+    );
     const uniqueStudentEmailsMap =
       this.findUniqueStudentEmailsMap(registrations);
     const commonStudentEmails: string[] = [];

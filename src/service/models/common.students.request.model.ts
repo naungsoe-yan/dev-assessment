@@ -7,4 +7,8 @@ export class CommonStudentsRequestModel {
     example: 'teacherken@gmail.com',
   })
   teachers: string[];
+
+  constructor(teachers: string[]) {
+    this.teachers = teachers;
+  }
 }

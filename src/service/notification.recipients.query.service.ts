@@ -1,47 +1,39 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository, In } from 'typeorm';
-import { isEmpty } from 'class-validator';
-import { CustomRegistrationRepository } from '../repository/custom.registration.repository';
-import { Student } from '../repository/entities/student.entity';
+import { arrayNotEmpty } from 'class-validator';
 import { ExtendedNotificationRecipientsRequestModel } from './models/extended.notification.recipients.request.model';
 import { NotificationRecipientsResponseModel } from './models/notification.recipients.response.model';
+import { StudentRepository } from '../repository/student.repository';
+import { RegistrationRepository } from '../repository/registration.repository';
 
 @Injectable()
 export class NotificationRecipientsQueryService {
   private readonly logger = new Logger(NotificationRecipientsQueryService.name);
-  private customRegistrationRepository: CustomRegistrationRepository;
 
   constructor(
-    private dataSource: DataSource,
-    @InjectRepository(Student)
-    private studentRepository: Repository<Student>,
-  ) {
-    this.customRegistrationRepository = new CustomRegistrationRepository(
-      dataSource,
-    );
-  }
+    private studentRepository: StudentRepository,
+    private registrationRepository: RegistrationRepository,
+  ) {}
 
-  async findNotificationRecipients(
+  async findNotificationRecipientsBy(
     requestModel: ExtendedNotificationRecipientsRequestModel,
   ): Promise<NotificationRecipientsResponseModel> {
     const registeredRecipients = await this.findRegisteredRecipients(
       requestModel.teacher,
     );
 
-    if (isEmpty(requestModel.recipients)) {
+    if (!arrayNotEmpty(requestModel.recipients)) {
       return new NotificationRecipientsResponseModel(registeredRecipients);
     }
 
     const unregisteredRecipients = requestModel.recipients.filter(
       (recipient) => !registeredRecipients.includes(recipient),
     );
-    const students = await this.studentRepository.findBy({
-      email: In(unregisteredRecipients),
-      suspended: false,
-    });
+    const students = await this.studentRepository.findByEmailsAndSuspended(
+      unregisteredRecipients,
+      false,
+    );
     let eligibleRecipients = students.map((student) => student.email);
-    eligibleRecipients = eligibleRecipients.concat(registeredRecipients);
+    eligibleRecipients = eligibleRecipients.concat(registeredRecipients).sort();
     return new NotificationRecipientsResponseModel(eligibleRecipients);
   }
 
@@ -49,7 +41,7 @@ export class NotificationRecipientsQueryService {
     teacherEmail: string,
   ): Promise<string[]> {
     const registrations =
-      await this.customRegistrationRepository.findByTeacherEmailAndSuspended(
+      await this.registrationRepository.findByTeacherEmailAndSuspended(
         teacherEmail,
         false,
       );

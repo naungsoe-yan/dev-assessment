@@ -1,4 +1,16 @@
 services:
+  backend:
+    container_name: "dev-assessment-mysql"
+    image: node
+    command: --default-authentication-plugin=mysql_native_password
+    depends_on:
+      - mysql
+    links:
+      - "mysql:database"
+    ports:
+      - "3000:3000"
+    volumes:
+      - backend:/home/node/nestjs
   mysql:
     container_name: "dev-assessment-mysql"
     image: mysql
@@ -10,4 +22,5 @@ services:
     volumes:
       - mysql:/home/node/mysql
 volumes:
+  backend:
   mysql:

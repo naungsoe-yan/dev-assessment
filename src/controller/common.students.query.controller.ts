@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, HttpCode, Get, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ParseCommonStudentsRequestPipe } from '../service/pipes/common.students.request.pipe';
 import { CommonStudentsRequestModel } from '../service/models/common.students.request.model';
@@ -15,10 +15,11 @@ export class CommonStudentsQueryController {
     description: 'Retrieve students common to a given list of teachers',
   })
   @Get('commonstudents')
-  async findCommonStrudents(
+  @HttpCode(200)
+  async findCommonStrudentsBy(
     @Query('teacher', ParseCommonStudentsRequestPipe)
     requestModel: CommonStudentsRequestModel,
   ): Promise<CommonStudentsResponseModel> {
-    return this.queryService.findCommonStrudents(requestModel);
+    return await this.queryService.findCommonStrudentsBy(requestModel);
   }
 }

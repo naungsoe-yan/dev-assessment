@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { ArrayNotEmpty, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class RegisterStudentsRequestModel {
   @ApiProperty({
@@ -15,6 +15,11 @@ export class RegisterStudentsRequestModel {
     example: ['studentjon@gmail.com', 'studenthon@gmail.com'],
   })
   @IsEmail({ ignore_max_length: false }, { each: true })
-  @IsNotEmpty()
+  @ArrayNotEmpty()
   students: string[];
+
+  constructor(teacher: string, students: string[]) {
+    this.teacher = teacher;
+    this.students = students;
+  }
 }
