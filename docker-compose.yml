@@ -32,7 +32,7 @@ services:
       - -c
       - |
         sleep 15
-        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init-docker.sql --output mysql-init.sql
+        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init.sql --output mysql-init.sql
         mysql --user=root --host=mysql --port=3306 dev-assessment < mysql-init.sql
         exit
     environment:
