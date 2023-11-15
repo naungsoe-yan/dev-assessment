@@ -13,33 +13,50 @@ services:
         npm install -g @nestjs/cli
         cd ./dev-assessment-main
         npm install
-        npm run build
-        cd ./dist
-        node main.js
+        npm run start
     environment:
-      - NODE_ENV=production
+      NODE_ENV: development
+    depends_on:
+      - seeder
+    links:
+      - mysql
+    ports:
+      - "3000:3000"
+    volumes:
+      - nodejs:/home/nodejs
+  seeder:
+    container_name: "seeder"
+    image: mysql:8.2.0
+    command:
+      - /bin/sh
+      - -c
+      - |
+        sleep 10
+        curl https://github.com/naungsoe-yan/dev-assessment/raw/main/mysql-init.sql --output mysql-init.sql
+        mysql --user=root --host=mysql --port=3306 dev-assessment < ./mysql-init.sql
+        exit
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
     depends_on:
       - mysql
     links:
-      - "mysql:database"
+      - mysql
     ports:
-      - "3000:3000"
-    expose:
-      - 3000
+      - "3305:3305"
     volumes:
-      - nodejs:/home/nodejs
+      - mysql:/home/mysql
+    
   mysql:
     container_name: "mysql"
     image: mysql:8.2.0
-    command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: dev-assessment
     ports:
       - "3306:3306"
-    expose:
-      - 3306
     volumes:
       - mysql:/home/mysql
 volumes:
   nodejs:
+  seeder:
   mysql:
