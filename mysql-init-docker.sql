@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `dev-assessment`.`teachers` (
+CREATE TABLE IF NOT EXISTS `teachers` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `created_date` DATETIME NOT NULL,
   `updated_date` DATETIME NULL,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `dev-assessment`.`teachers` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 
-CREATE TABLE IF NOT EXISTS `dev-assessment`.`students` (
+CREATE TABLE IF NOT EXISTS `students` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `created_date` DATETIME NOT NULL,
   `updated_date` DATETIME NULL,
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `dev-assessment`.`students` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 
-CREATE TABLE IF NOT EXISTS `dev-assessment`.`registrations` (
+CREATE TABLE IF NOT EXISTS `registrations` (
   `id` BIGINT NOT NULL AUTO_INCREMENT,
   `created_date` DATETIME NOT NULL,
   `updated_date` DATETIME NULL,
@@ -27,11 +27,11 @@ CREATE TABLE IF NOT EXISTS `dev-assessment`.`registrations` (
   INDEX `fk_registrations_students_id_idx` (`student_id` ASC) VISIBLE,
   CONSTRAINT `fk_registrations_teachers_id`
     FOREIGN KEY (`teacher_id`)
-    REFERENCES `dev-assessment`.`teachers` (`id`)
+    REFERENCES `teachers` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_registrations_students_id`
     FOREIGN KEY (`student_id`)
-    REFERENCES `dev-assessment`.`students` (`id`)
+    REFERENCES `students` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
