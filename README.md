@@ -10,9 +10,9 @@ Prerequisites:
 
 ### MySQL credentials
 
-Update the following credentials in `.env` file
+Update the following MySQL credentials in `.env` file
 
-```
+```sql
 DATABASE_HOST=127.0.0.1
 DATABASE_PORT=3306
 DATABASE_USER=root
@@ -27,7 +27,10 @@ Execute the SQL statements from `mysql-init.sql` file in MySQL server
 ### Installation
 
 ```bash
+# nestjs cli
 $ npm install -g @nestjs/cli
+
+# dependencies
 $ npm install
 ```
 
@@ -45,7 +48,7 @@ $ npm run start:dev
 
 Go to the following URL to try out the APIs
 
-```bash
+```
 http://localhost:3000/swagger
 ```
 
@@ -78,6 +81,6 @@ It will take a while to spin up the containers
 
 Go to the following URL to try out the APIs
 
-```bash
+```
 http://localhost:3000/swagger
 ```
