@@ -71,11 +71,13 @@ Prerequisites:
 
 ### Running the app
 
+Important:\
+May need to disable VPN on your computer to allow the internet access.\
+It will take a while to spin up containers and create database schema.
+
 ```bash
 $ docker-compose up -d
 ```
-
-It will take a while to spin up the containers
 
 ### Accessing the APIs
 
