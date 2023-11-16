@@ -73,7 +73,6 @@ export class RegisterStudentsCommandService {
   private async findOrSaveStudents(
     studentEmails: string[],
   ): Promise<Array<Student>> {
-    console.log('studentEmails', studentEmails);
     const students = await this.studentRepository.findByEmails(studentEmails);
 
     if (students.length === studentEmails.length) {
