@@ -5,8 +5,6 @@ import { CommonStudentsRequestModel } from '../models/common.students.request.mo
 
 @Injectable()
 export class ParseCommonStudentsRequestPipe implements PipeTransform<string[]> {
-  private readonly regex = new RegExp(/@([~\S]*)/, 'g');
-
   transform(value: string | string[]): CommonStudentsRequestModel {
     if (isEmpty(value)) {
       throw new BadRequestException('teacher should not be empty');
