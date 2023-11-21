@@ -22,7 +22,10 @@ export class NotificationRecipientsQueryService {
     );
 
     if (!arrayNotEmpty(requestModel.recipients)) {
-      return new NotificationRecipientsResponseModel(registeredRecipients);
+      const responseModel = new NotificationRecipientsResponseModel(
+        registeredRecipients,
+      );
+      return Promise.resolve(responseModel);
     }
 
     const unregisteredRecipients = requestModel.recipients.filter(
@@ -34,7 +37,10 @@ export class NotificationRecipientsQueryService {
     );
     let eligibleRecipients = students.map((student) => student.email);
     eligibleRecipients = eligibleRecipients.concat(registeredRecipients).sort();
-    return new NotificationRecipientsResponseModel(eligibleRecipients);
+    const responseModel = new NotificationRecipientsResponseModel(
+      eligibleRecipients,
+    );
+    return Promise.resolve(responseModel);
   }
 
   private async findRegisteredRecipients(
